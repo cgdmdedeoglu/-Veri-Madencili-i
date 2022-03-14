@@ -1,0 +1,72 @@
+ 
+ #c4.5 karar ağacı uygulaması
+
+#veri seti çağırılır
+veriler= read.table(file.choose(), header = T, sep = ";")
+
+install.packages("RWeka")
+library(RWeka)
+install.packages("Rjava")
+library("RJava")
+install.packages("partykit")
+library(partykit)
+install.packages("plyr")
+library(plyr)
+install.packages("caret")
+library("caret")
+
+
+#veriler nümerik ve faktör olarak tanımlanır.
+veriler$yas <- as.numeric(veriler$yas)
+veriler$anemi <- as.factor(veriler$anemi)
+veriler$kreatinin_.fosfokinaz <- as.numeric(veriler$kreatinin_.fosfokinaz)
+veriler$diyabet <- as.factor(veriler$diyabet)
+veriler$ejeksiyon_fraksiyonu <- as.numeric(veriler$ejeksiyon_fraksiyonu)
+veriler$yüksek_kan_basıncı <- as.factor(veriler$yüksek_kan_basıncı)
+veriler$trombositler <- as.numeric(veriler$trombositler)
+veriler$serum_sodyum <- as.numeric(veriler$serum_sodyum)
+veriler$cinsiyet <- as.factor(veriler$cinsiyet)
+veriler$sigara <- as.factor(veriler$sigara)
+veriler$zaman <- as.numeric(veriler$zaman)
+veriler$ölüm_olayı <- as.factor(veriler$ölüm_olayı)
+
+print(veriler)
+View(veriler)
+summary(veriler)
+str(veriler)
+attributes(veriler)
+
+#anemi değişkeninde 1=anemivar,0=anemiyok şeklinde tanımlanır.
+veriler$anemi <- revalue(veriler$anemi, c("1"="anemivar","0"="anemiyok"))
+
+#cinsiyet değişkeni 0=erkek 1=kadın olarak tanımlanır.
+veriler$cinsiyet <- revalue(veriler$cinsiyet, c("0"="erkek","1"="kadın"))
+
+#diyabet değişkeni 1=yok 0= var şeklinde tanımlanır.
+veriler$diyabet <- revalue(veriler$diyabet, c("1"="yok","0"="var"))
+
+#yüksek kan basıncı değişkeni 0=yok 1=var
+veriler$yüksek_kan_basıncı <- revalue(veriler$yüksek_kan_basıncı, c("0"="yok","1"="var"))
+
+#sigara değişkeni 0=içiyor 1=içmiyor şeklinde tanımlanır.
+veriler$sigara <- revalue(veriler$sigara, c("0"="içiyor","1"="içmiyor"))
+
+#ölüm olayı değişkeni 0=ölümyok 1=ölümvar şeklinde tanımlanmıştır.
+veriler$ölüm_olayı <- revalue(veriler$ölüm_olayı, c("0"="ölümyok","1"="ölümvar"))
+
+
+head(veriler)
+
+
+#Rweka peketi icinde C4.5  algoritmasinin J48() isimli bir uyarlamasi yer almaktadir.
+modelC11 <- J48(ölüm_olayı~.,data = veriler)
+
+#kurallari gorelim
+print(modelC11)
+
+summary(modelC11)
+
+#c4.5 algortimasının karar ağacı
+plot(modelC11)
+
+
